@@ -1,0 +1,21 @@
+---
+- name: stat /etc/resolv.conf
+  stat:
+    path: /etc/resolv.conf
+  register: resolvconf
+
+- name: remove /etc/resolv.conf if symbolic link
+  become: true
+  file:
+    path: /etc/resolv.conf
+    state: absent
+  when: resolvconf.stat.islnk
+
+- name: create dhclient hook to prevent it from updating /etc/resolv.conf
+  become: true
+  copy:
+    src: nodnsupdate
+    dest: /etc/dhcp/dhclient-enter-hooks.d/nodnsupdate
+    owner: root
+    group: root
+    mode: 0644

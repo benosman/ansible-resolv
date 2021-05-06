@@ -1,4 +1,8 @@
 ---
+- name: ubuntu configuration
+  include_tasks: ubuntu.yml
+  when: ansible_distribution == "Ubuntu"
+  
 - name: "Configure resolv.conf"
   template:
     src: "resolv.conf.j2"
